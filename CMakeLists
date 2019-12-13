@@ -1,0 +1,46 @@
+# CMAKE_CXX_STANDARD supports only 3rd version of cmake
+cmake_minimum_required(VERSION 3.2)
+
+
+# make sure that the default is a RELEASE
+if (NOT CMAKE_BUILD_TYPE)
+  set (CMAKE_BUILD_TYPE RELEASE CACHE STRING
+  "Choose the type of build, options are: None Debug Release."
+   FORCE)
+endif (NOT CMAKE_BUILD_TYPE)
+
+
+# Ensure that libraries and binaries end up in the right place
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# Get number of cores in the system to use in tests
+include(ProcessorCount)
+ProcessorCount(CORES)
+if(CORES EQUAL 0)
+    set(CORES 2)
+endif()
+
+
+# Windows doesn't support copy with wildcards
+if (WIN32)
+  set(OS_COPY_COMMAND "xcopy")
+  set(OS_COPY_COMMAND_OPT "/q/y/c")
+  set(OS_RM_COMMAND "rd")
+  set(OS_RM_COMMAND_OPT "/s/q")
+  set(PYTHON_COMMAND "python")
+else (WIN32)
+  set(OS_COPY_COMMAND ${CMAKE_COMMAND})
+  set(OS_COPY_COMMAND_OPT -E copy )
+  set(OS_RM_COMMAND "rm")
+  set(OS_RM_COMMAND_OPT "-rf")
+  set(PYTHON_COMMAND "python3.6")
+endif (WIN32)
+
+add_custom_target( distclean )
+
+enable_testing()
+
+add_subdirectory(puzzle-generator)
+add_subdirectory(puzzle-solver)
