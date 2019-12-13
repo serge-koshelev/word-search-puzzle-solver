@@ -1,3 +1,6 @@
+//    Copyright(C) 2019, Serge Koshelev. All rights reserved.
+//    mailto: serge.koshelev@gmail.com
+//
 //    This file is part of word-search-puzzle-solver.
 //
 //    It is free software: you can redistribute it and/or modify
@@ -15,7 +18,7 @@
 
 #include <iostream>
 #include <random>
-#include <stdexcept> 
+#include <stdexcept>
 
 #include "PuzzleGenerator.h"
 
@@ -28,7 +31,6 @@ PuzzleGenerator::PuzzleGenerator()
   _columnsNumber = 10;
 }
 
-
 PuzzleGenerator::PuzzleGenerator( int rows, int columns )
 {
   _rowsNumber    = rows;
@@ -37,19 +39,20 @@ PuzzleGenerator::PuzzleGenerator( int rows, int columns )
   if ( rows < 0 || columns < 0 ) { throw std::invalid_argument( "Dimensions of puzzle must be positive" ); }
 }
 
-std::vector< std::string> > GeneratePuzzle( int seed )
+std::vector< std::string> * PuzzleGenerator::GeneratePuzzle( int seed )
 {
   std::default_random_engine generator( seed );
-  std::uniform_int_distribution<int> distribution( 0, LettersPool.length() );
+  std::uniform_int_distribution<int> distribution( 0, (int)LettersPool.length()-1 );
+  std::vector< std::string>* puzzle = new std::vector<std::string>( _rowsNumber );
 
-  std::vector< std::string> > puzzle = new std::vector< std::string> >( _rowsNumber );
   for ( int i = 0; i < _rowsNumber; ++i )
   {
-    for ( int j = 0; i < _columnsNumber; ++ )
+    for ( int j = 0; j < _columnsNumber; ++j )
     {
-      
+      auto randomNumber = distribution( generator );
+      (*puzzle)[i].append( 1, LettersPool[randomNumber] );
     }
   }
+  return puzzle;
 }
 
-#endif

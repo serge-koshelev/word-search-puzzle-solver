@@ -1,4 +1,5 @@
-//    Copyright(C) 2019, Serge Koshelev. All rights reserved  mailto: serge.koshelev@gmail.com
+//    Copyright(C) 2019, Serge Koshelev. All rights reserved.
+//    mailto: serge.koshelev@gmail.com
 //
 //    This file is part of word-search-puzzle-solver.
 //
@@ -19,6 +20,7 @@
 #define PUZZLE_GENERATOR_HH
 
 #include <string>
+#include <vector>
 
 /// @class PuzzleGenerator
 /// @brief Randomly generates M rows by N columns word puzzle
@@ -29,22 +31,22 @@
 ///   ....
 class PuzzleGenerator
 {
-  public:
-    /// @brief Default constructor
-    PuzzleGenerator();
+public:
+  /// @brief Default constructor
+  PuzzleGenerator();
 
-    /// @brief Constructor of puzzle generator
-    /// @param rows word puzzle rows number
-    /// @param columns word puzzle columns number
-    PuzzleGenerator( int rows, int columns );
+  /// @brief Constructor of puzzle generator
+  /// @param rows word puzzle rows number
+  /// @param columns word puzzle columns number
+  PuzzleGenerator( int rows, int columns );
 
-    std::vector< std::string> > GeneratePuzzle( int seed );
+  std::vector<std::string> * GeneratePuzzle( int seed );
 
-  private:
-    int  _rowsNumber;
-    int  _columnsNumber;
+private:
+  int  _rowsNumber;
+  int  _columnsNumber;
 
-    static std::string  LettersPool; /// keep all possible letters to be used in puzzle
-}
+  static std::string  LettersPool; /// keep all possible letters to be used in puzzle
+};
 
 #endif
