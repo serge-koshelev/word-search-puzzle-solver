@@ -1,0 +1,9 @@
+﻿set(BINARY ${CMAKE_PROJECT_NAME})
+
+file(GLOB_RECURSE SOURCES LIST_DIRECTORIES true *.h *.cpp)
+set(SOURCES_LIB ${SOURCES})
+set(SOURCES_RUN ${SOURCES})
+list(FILTER SOURCES_LIB EXCLUDE REGEX ".*main.cpp$")
+
+add_executable(${BINARY}_run ${SOURCES_RUN})
+add_library(${BINARY}_lib STATIC ${SOURCES_LIB})

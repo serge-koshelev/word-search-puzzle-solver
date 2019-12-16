@@ -34,3 +34,6 @@
 # Visual Studio
 .vs
 out
+
+# Cmake
+build

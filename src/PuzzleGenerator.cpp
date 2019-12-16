@@ -39,11 +39,11 @@ PuzzleGenerator::PuzzleGenerator( int rows, int columns )
   if ( rows < 0 || columns < 0 ) { throw std::invalid_argument( "Dimensions of puzzle must be positive" ); }
 }
 
-std::vector< std::string> * PuzzleGenerator::GeneratePuzzle( int seed )
+std::shared_ptr<std::vector< std::string>> PuzzleGenerator::GeneratePuzzle( int seed )
 {
-  std::default_random_engine generator( seed );
-  std::uniform_int_distribution<int> distribution( 0, (int)LettersPool.length()-1 );
-  std::vector< std::string>* puzzle = new std::vector<std::string>( _rowsNumber );
+  std::default_random_engine                 generator( seed );
+  std::uniform_int_distribution<int>         distribution( 0, (int)LettersPool.length()-1 );
+  std::shared_ptr<std::vector< std::string>> puzzle( new std::vector<std::string>( _rowsNumber ) );
 
   for ( int i = 0; i < _rowsNumber; ++i )
   {

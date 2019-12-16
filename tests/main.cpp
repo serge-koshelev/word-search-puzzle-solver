@@ -16,37 +16,10 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef PUZZLE_GENERATOR_HH
-#define PUZZLE_GENERATOR_HH
+#include "gtest/gtest.h"
 
-#include <string>
-#include <vector>
-
-/// @class PuzzleGenerator
-/// @brief Randomly generates M rows by N columns word puzzle
-/// Something like this:
-///   JLIBPNZQOAJD
-///   KBFAMZSBEARQ
-///   OAKTMICECTQG
-///   ....
-class PuzzleGenerator
+int main( int argc, char** argv )
 {
-public:
-  /// @brief Default constructor
-  PuzzleGenerator();
-
-  /// @brief Constructor of puzzle generator
-  /// @param rows word puzzle rows number
-  /// @param columns word puzzle columns number
-  PuzzleGenerator( int rows, int columns );
-
-  std::vector<std::string> * GeneratePuzzle( int seed );
-
-private:
-  int  _rowsNumber;
-  int  _columnsNumber;
-
-  static std::string  LettersPool; /// keep all possible letters to be used in puzzle
-};
-
-#endif
+  ::testing::InitGoogleTest( &argc, argv );
+  return RUN_ALL_TESTS();
+}
