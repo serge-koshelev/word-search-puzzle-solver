@@ -17,7 +17,6 @@
 //    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <cstring>
-#include <memory>
 #include <stdexcept>
 
 #include "Puzzle.h"
@@ -42,6 +41,7 @@ Puzzle::Puzzle( size_t rowsNumber, size_t columnsNumber )
 
 void Puzzle::set( const Position & p, char value )
 {
+  value = toupper( value );
   // if cell was initialized before, clean it old value from hash
   if ( get( p ) != _notInitializedValue )
   {
@@ -58,3 +58,19 @@ void Puzzle::set( const Position & p, char value )
   return;
 }
 
+std::ostream& operator << ( std::ostream& os, const Puzzle& pz )
+{
+  os << std::endl;
+
+  for ( int i = 0; i < pz.rows(); ++i )
+  {
+    for ( int j = 0; j < pz.columns(); ++j )
+    {
+      os << pz[i][j] << " ";
+    }
+    os << std::endl;
+  }
+  os << std::endl;
+
+  return os;
+}

@@ -21,6 +21,7 @@
 #include <stdexcept>
 
 #include "PuzzleGenerator.h"
+#include "Puzzle.h"
 
 std::string PuzzleGenerator::LettersPool = "ABCDEFGHIGKLMNOPQRSTUVWXYZ";
 
@@ -39,18 +40,18 @@ PuzzleGenerator::PuzzleGenerator( int rows, int columns )
   if ( rows < 0 || columns < 0 ) { throw std::invalid_argument( "Dimensions of puzzle must be positive" ); }
 }
 
-std::shared_ptr<std::vector< std::string>> PuzzleGenerator::GeneratePuzzle( int seed )
+std::shared_ptr<Puzzle> PuzzleGenerator::GenerateRandomPuzzle( int seed )
 {
   std::default_random_engine                 generator( seed );
   std::uniform_int_distribution<int>         distribution( 0, (int)LettersPool.length()-1 );
-  std::shared_ptr<std::vector< std::string>> puzzle( new std::vector<std::string>( _rowsNumber ) );
+  std::shared_ptr<Puzzle> puzzle( new Puzzle( _rowsNumber, _columnsNumber ) );
 
   for ( int i = 0; i < _rowsNumber; ++i )
   {
     for ( int j = 0; j < _columnsNumber; ++j )
     {
       auto randomNumber = distribution( generator );
-      (*puzzle)[i].append( 1, LettersPool[randomNumber] );
+      puzzle->set( Position({i, j}), LettersPool[randomNumber] );
     }
   }
   return puzzle;

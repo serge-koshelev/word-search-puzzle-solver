@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+class Puzzle;
+
 /// @class PuzzleGenerator
 /// @brief Randomly generates M rows by N columns word puzzle
 /// Something like this:
@@ -42,7 +44,7 @@ public:
   /// @param columns word puzzle columns number
   PuzzleGenerator( int rows, int columns );
 
-  std::shared_ptr<std::vector<std::string>> GeneratePuzzle(int seed);
+  std::shared_ptr<Puzzle> GenerateRandomPuzzle(int seed);
 
 private:
   int  _rowsNumber;
