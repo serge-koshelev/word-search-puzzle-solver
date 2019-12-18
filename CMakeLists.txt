@@ -42,6 +42,10 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
 
 set( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
 
+# Add dictionaries
+file(GLOB_RECURSE DICTIONARY_FILES LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/data/*.dic)
+install(FILES ${DICTIONARY_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin)
+
 # Add executable and tests
 add_subdirectory(src)
 add_subdirectory(tests)
