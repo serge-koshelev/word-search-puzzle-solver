@@ -16,43 +16,27 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef PUZZLE_GENERATOR_HH
-#define PUZZLE_GENERATOR_HH
+#ifndef PUZZLE_SOLVER_HH
+#define PUZZLE_SOLVER_HH
 
 #include <memory>
-#include <ostream>
 #include <string>
-#include <vector>
 
 class Puzzle;
+class PuzzleIterator;
 
-/// @class PuzzleGenerator
-/// @brief Fenerates M rows by N columns word puzzle
-/// using various algorithms
-/// Something like this:
-///   JLIBPNZQOAJD
-///   KBFAMZSBEARQ
-///   OAKTMICECTQG
-///   ....
-class PuzzleGenerator
+/// @class PuzzleSolver
+/// @brief Solves puzzle or do some operations needed for solve
+class PuzzleSolver
 {
 public:
   /// @brief Default constructor
-  PuzzleGenerator();
+  PuzzleSolver();
 
-  /// @brief Generate random filled puzzle with given dimensions and random seed
-  /// @param seed random seed for random generator
-  /// @param rows word puzzle rows number
-  /// @param columns word puzzle columns numbe
-  std::shared_ptr<Puzzle> generateRandomPuzzle( int seed = 0, int rows = 10, int columns = 10 );
-
-  /// @brief Generates puzzle which mentioned on Wiki page
-  /// https://en.wikipedia.org/wiki/Word_search
-  /// it is used for tests and benchmarks
-  std::shared_ptr<Puzzle> generateWikiPuzzle();
+  /// @brief search one word in puzlle. On success where will contain starting point iterator
+  bool findWordInPuzzle( std::shared_ptr<Puzzle>, const std::string & word2Search, PuzzleIterator & where );
 
 private:
-  static std::string  LettersPool; /// keep all possible letters to be used in puzzle
 };
 
 #endif

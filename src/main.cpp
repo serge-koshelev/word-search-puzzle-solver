@@ -18,10 +18,12 @@
 
 #include <iostream>
 #include "PuzzleGenerator.h"
+#include "Puzzle.h"
 
 void Usage( const char * programName )
 {
-  std::cout << "Words puzzle generator. Copyright( C ) 2019. Usage:" << std::endl;
+  std::cout << "Words puzzle generator. Copyright( C ) 2019. Serge Koshelev" << std::endl;
+  std::cout << "  Usage:" << std::endl;
   std::cout << "  " << programName << " [<rows> [<cols> [<seed>]]]" << std::endl;
 }
 
@@ -44,12 +46,14 @@ int main( int argc, char** argv )
     return -1;
   }
 
-  PuzzleGenerator generator( rows, cols );
-  auto puzzle = generator.GeneratePuzzle( seed );
-  for( auto ln : *puzzle )
-  {
-    std::cout << ln << std::endl;
-  }
+  std::cout << "Random generated word puzzle " << rows << "x" << cols << std::endl;
+  PuzzleGenerator generator;
+  auto puzzle = generator.generateRandomPuzzle( seed, rows, cols );
+  std::cout << *puzzle;
+
+  std::cout << "Word puzzle 10x10 from Wiki page about word search" << std::endl;
+  auto wikiPuzzle = generator.generateWikiPuzzle();
+  std::cout << *wikiPuzzle;
 
   return 0;
 }

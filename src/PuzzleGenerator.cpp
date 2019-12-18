@@ -26,29 +26,17 @@
 std::string PuzzleGenerator::LettersPool = "ABCDEFGHIGKLMNOPQRSTUVWXYZ";
 
 
-PuzzleGenerator::PuzzleGenerator()
-{
-  _rowsNumber    = 10;
-  _columnsNumber = 10;
-}
+PuzzleGenerator::PuzzleGenerator() {}
 
-PuzzleGenerator::PuzzleGenerator( int rows, int columns )
-{
-  _rowsNumber    = rows;
-  _columnsNumber = columns;
-
-  if ( rows < 0 || columns < 0 ) { throw std::invalid_argument( "Dimensions of puzzle must be positive" ); }
-}
-
-std::shared_ptr<Puzzle> PuzzleGenerator::GenerateRandomPuzzle( int seed )
+std::shared_ptr<Puzzle> PuzzleGenerator::generateRandomPuzzle( int seed, int rows, int columns )
 {
   std::default_random_engine                 generator( seed );
-  std::uniform_int_distribution<int>         distribution( 0, (int)LettersPool.length()-1 );
-  std::shared_ptr<Puzzle> puzzle( new Puzzle( _rowsNumber, _columnsNumber ) );
+  std::uniform_int_distribution<int>         distribution( 0, (int)LettersPool.length() - 1 );
+  std::shared_ptr<Puzzle> puzzle( new Puzzle( rows, columns ) );
 
-  for ( int i = 0; i < _rowsNumber; ++i )
+  for ( int i = 0; i < rows; ++i )
   {
-    for ( int j = 0; j < _columnsNumber; ++j )
+    for ( int j = 0; j < columns; ++j )
     {
       auto randomNumber = distribution( generator );
       puzzle->set( Position({i, j}), LettersPool[randomNumber] );
@@ -57,3 +45,26 @@ std::shared_ptr<Puzzle> PuzzleGenerator::GenerateRandomPuzzle( int seed )
   return puzzle;
 }
 
+std::shared_ptr<Puzzle> PuzzleGenerator::generateWikiPuzzle()
+{
+  char pzl[10][10] = {{ 'W', 'V', 'E', 'R', 'T', 'I', 'C', 'A', 'L', 'L' },
+                      { 'R', 'O', 'O', 'A', 'F', 'F', 'L', 'S', 'A', 'B' },
+                      { 'A', 'C', 'R', 'I', 'L', 'I', 'A', 'T', 'O', 'A' },
+                      { 'N', 'D', 'O', 'D', 'K', 'O', 'N', 'W', 'D', 'C' },
+                      { 'D', 'R', 'K', 'E', 'S', 'O', 'O', 'D', 'D', 'K' },
+                      { 'O', 'E', 'E', 'P', 'Z', 'E', 'G', 'L', 'I', 'W' },
+                      { 'M', 'S', 'I', 'I', 'H', 'O', 'A', 'E', 'R', 'A' },
+                      { 'A', 'L', 'R', 'K', 'R', 'R', 'I', 'R', 'E', 'R' },
+                      { 'K', 'O', 'D', 'I', 'D', 'E', 'D', 'R', 'C', 'D' },
+                      { 'H', 'E', 'L', 'W', 'S', 'L', 'E', 'U', 'T', 'H' }};
+
+  std::shared_ptr<Puzzle> puzzle( new Puzzle( 10, 10 ) );
+  for ( int i = 0; i < 10; ++i )
+  {
+    for ( int j = 0; j < 10; ++j )
+    {
+      puzzle->set( Position( {i,j} ), pzl[i][j] );
+    }
+  }
+  return puzzle;
+}

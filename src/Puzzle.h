@@ -28,7 +28,7 @@
 #include <cctype>
 
 
-typedef std::pair<size_t, size_t> Position;
+typedef std::pair<int, int> Position;
 
 /// @class Puzzle
 /// @brief Container to puzzle implemented
@@ -36,21 +36,23 @@ typedef std::pair<size_t, size_t> Position;
 class Puzzle
 {
   public:
+    const static int NotInitializedValue = -1;
+
     /// @brief Constructor defines word puzzle dimensions
-    Puzzle( size_t rowsNumber = 5, size_t columnsNumber = 5 );
+    Puzzle( int rowsNumber = 5, int columnsNumber = 5 );
 
     /// @brief Destructor
     ~Puzzle() { ; }
 
     /// @brief Get puzzle dimension in rows
-    size_t rows()    const { return _rowsNumber; }
+    int rows()    const { return _rowsNumber; }
 
     /// @brief Get puzzle dimension in columns
-    size_t columns() const { return _columnsNumber; }
+    int columns() const { return _columnsNumber; }
 
     /// @brief Operator for direct access to puzzle cell
     /// Allows also to change puzzle cell, but without caching it
-    char* operator [] ( size_t i ) const { return _puzzle[i]; }
+    char* operator [] ( int i ) const { return _puzzle[i]; }
 
     /// @brief Get word puzzle cell element for the given pozition
     char get( const Position& p ) const { return _puzzle[p.first][p.second]; }
@@ -62,15 +64,38 @@ class Puzzle
     const std::vector<Position>& getPositions( char value ) { return _hash[toupper(value)]; }
 
   protected:
-    size_t                                 _rowsNumber;
-    size_t                                 _columnsNumber;
+    int                                    _rowsNumber;
+    int                                    _columnsNumber;
     std::map <char, std::vector<Position>> _hash;
 
   private:
-    std::unique_ptr<char[]>  _puzzle_memory;
-    std::unique_ptr<char*[]> _puzzle;
+    // Memory allocated for puzzle distributed in the following way
+    //
+    // row pointers :    [ r1 r2 r3 ... rn ]
+    //                     |   \  \       \
+    //                     |    \  ------  ----------------------
+    //                     |     \       \                       \
+    //                     V      V       V                       V
+    // all memory block: [ x x x x x x x x x x x x x x x x x x x x x x x x ]
+    //  
+    //  puzzle has false rows and columns which could be addressed with -1 or columnsNumber/rowsNumber
+    //  to help search algorithm to stop on puzzle boundaries as values at those boundaries are _notInitializedValue
+    //  puzzle looks like this:
+    //   boundary columns
+    //   \               --\
+    //    |                 \
+    //   -1 -1 -1 ... -1 -1 -1 <- boundary row
+    //   -1  x  x ...  x  x -1
+    //   -1  x  x ...  x  x -1 
+    //   .....................
+    //   -1  x  x ...  x  x -1
+    //   -1  x  x ...  x  x -1
+    //   -1 -1 -1 ... -1 -1 -1 <- boundary row
+    //
 
-    const static int _notInitializedValue = -1;
+    std::unique_ptr<char[]>  _puzzle_memory; // to keep all puzzle allocated memory
+    std::unique_ptr<char*[]> _puzzle_rows;   // to keep array of pointers to rows
+    char **                  _puzzle;        // to navigate inside puzzle taking in account outside boundaries
 };
 
 std::ostream& operator << ( std::ostream& os, const Puzzle& pz );

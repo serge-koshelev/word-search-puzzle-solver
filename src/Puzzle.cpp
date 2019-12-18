@@ -21,29 +21,32 @@
 
 #include "Puzzle.h"
 
-Puzzle::Puzzle( size_t rowsNumber, size_t columnsNumber )
+Puzzle::Puzzle( int rowsNumber, int columnsNumber )
 {
   _rowsNumber    = rowsNumber;
   _columnsNumber = columnsNumber;
 
   if ( _rowsNumber < 1 || _columnsNumber < 1 ) { throw std::invalid_argument( "Bad puzzle dimensions" ); }
 
-  _puzzle_memory = std::unique_ptr<char[]>( new char  [_rowsNumber * _columnsNumber] );
-  _puzzle        = std::unique_ptr<char*[]>( new char* [_rowsNumber] );
+  size_t totalRows    = static_cast<size_t>( _rowsNumber    ) + 2;
+  size_t totalColumns = static_cast<size_t>( _columnsNumber ) + 2;
 
-  memset( _puzzle_memory.get(), _notInitializedValue, _rowsNumber * _columnsNumber );
+  _puzzle_memory = std::unique_ptr<char[]>( new char  [totalRows * totalColumns] );
+  memset( _puzzle_memory.get(), NotInitializedValue, totalRows * totalColumns );
 
-  for ( int i = 0; i < _rowsNumber; ++i )
+  _puzzle_rows = std::unique_ptr<char* []>( new char* [totalRows] );
+  for ( int i = 0; i < _rowsNumber+2; ++i )
   {
-    _puzzle[i] = _puzzle_memory.get() + i * _columnsNumber;
+    _puzzle_rows[i] = _puzzle_memory.get() + i * totalColumns + 1;
   }
+  _puzzle = _puzzle_rows.get() + 1;
 };
 
 void Puzzle::set( const Position & p, char value )
 {
   value = toupper( value );
   // if cell was initialized before, clean it old value from hash
-  if ( get( p ) != _notInitializedValue )
+  if ( get( p ) != NotInitializedValue )
   {
     char oldValue = _puzzle[p.first][p.second];
     auto endPosistion = _hash[oldValue].end();

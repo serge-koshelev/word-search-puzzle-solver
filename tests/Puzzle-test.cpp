@@ -56,6 +56,7 @@ namespace
     // for Foo.
   };
 
+  // testing that puzzle is correctly initialized
   TEST( PuzzleTest, initialization ) {
     //arrange
     Puzzle puz( 5, 5 );
@@ -63,13 +64,14 @@ namespace
     //assert
     for (int i = 0; i < 5; ++i)
     {
-      for (size_t j = 0; j < 5; ++j)
+      for (int j = 0; j < 5; ++j)
       {
         EXPECT_EQ( puz[i][j], -1 );
       }
     }
   }
 
+  // test that puzzle pozition hashin is working 
   TEST( PuzzleTest, hashing ) {
     //arrange
     Puzzle puz( 5, 5 );
@@ -122,5 +124,40 @@ namespace
     positionsList = puz.getPositions( 'F' );
     EXPECT_EQ( positionsList.size(), 1 );
     EXPECT_EQ( positionsList[0], Position( {2, 1} ) );
+  }
+
+  // test that puzzle boundaries are correctly initialized 
+  TEST( PuzzleTest, boundaries ) {
+    //arrange
+    Puzzle puz( 5, 5 );
+
+    //act
+    for ( int i = 0; i < 5; ++i )
+    {
+      for ( int j = 0; j < 5; ++j )
+      {
+        puz.set( Position( {i,j} ), 'A' + i );
+      }
+    }
+    //assert
+    for ( int j = 0; j < 5; ++j ) // top/down boundaries
+    {
+      EXPECT_EQ( static_cast<char>(Puzzle::NotInitializedValue), puz.get( Position( {-1, j} ) ) );
+      EXPECT_EQ( static_cast<char>(Puzzle::NotInitializedValue), puz.get( Position( { 5, j} ) ) );
+    }
+
+    for ( int i = 0; i < 5; ++i ) // puzzle part
+    {
+      for ( int j = 0; j < 5; ++j )
+      {
+        EXPECT_EQ( ('A' + i), puz.get( Position( {i,j} ) ) );
+      }
+    }
+
+    for ( int i = 0; i < 5; ++i ) // left/right boundaries
+    {
+      EXPECT_EQ( static_cast<char>(Puzzle::NotInitializedValue), puz.get( Position( {i, -1} ) ) );
+      EXPECT_EQ( static_cast<char>(Puzzle::NotInitializedValue), puz.get( Position( {i,  5} ) ) );
+    }
   }
 }

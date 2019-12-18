@@ -17,23 +17,25 @@
 //    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "gtest/gtest.h"
-#include "Puzzle.h"
+
+#include "PuzzleIterator.h"
+#include "PuzzleSolver.h"
 #include "PuzzleGenerator.h"
 
 namespace
 {
-  // The fixture for testing class Foo.
-  class PuzzleGeneratorTest : public ::testing::Test {
+  // The fixture for testing class PuzzleSolverTest.
+  class PuzzleSolverTest : public ::testing::Test {
   protected:
     // You can remove any or all of the following functions if their bodies would
     // be empty.
 
-    PuzzleGeneratorTest()
+    PuzzleSolverTest()
     {
       // You can do set-up work for each test here.
     }
 
-    ~PuzzleGeneratorTest() override
+    ~PuzzleSolverTest() override
     {
       // You can do clean-up work that doesn't throw exceptions here.
     }
@@ -52,47 +54,27 @@ namespace
       // Code here will be called immediately after each test (right
       // before the destructor).
     }
-
-    // Class members declared here can be used by all tests in the test suite
-    // for Foo.
   };
 
-  TEST( PuzzleGeneratorTest, initialization ) {
+  TEST( PuzzleSolverTest, searchOneWord ) {
     //arrange
-    char expectedPuzzle[3][3] = { {'Q', 'P', 'B'},
-                                  {'Q', 'Z', 'R'},
-                                  {'D', 'Z', 'R'}
+    PuzzleGenerator gen;
+
+    std::vector<std::string> wordList = {
+      "Find", "Random", "Sleuth", "Backward", "Vertical", 
+      "Diagonal", "Wikipedia", "Horizontal", "Word Search"
     };
-    PuzzleGenerator gen;
 
     //act
-    auto randomPuzzle = gen.generateRandomPuzzle( 0, 3, 3 );
-
+    auto wikiPuzzle = gen.generateWikiPuzzle();
+    PuzzleSolver solver;
+    PuzzleIterator it( wikiPuzzle, Position( {0,0}), SouthEast );
+    
     //assert
-    for (int i = 0; i < randomPuzzle->rows(); ++i)
+    for ( auto s : wordList )
     {
-      for (int j = 0; j < randomPuzzle->columns(); ++j)
-      {
-        EXPECT_EQ( expectedPuzzle[i][j], randomPuzzle->get( Position( { i,j } ) ) );
-      }
+      EXPECT_TRUE( solver.findWordInPuzzle( wikiPuzzle, s, it ) );
+      //std::cout << s << ": -> " << it << std::endl;
     }
-  }
-
-  TEST( PuzzleGeneratorTest, hashing )
-  {
-    //arrange
-    PuzzleGenerator gen;
-
-    //act
-    auto randomPuzzle = gen.generateRandomPuzzle( 0, 3, 3 );
-
-    //assert
-    ASSERT_EQ( 0, randomPuzzle->getPositions( 'A' ).size() );
-    ASSERT_EQ( 1, randomPuzzle->getPositions( 'B' ).size() );
-    ASSERT_EQ( 1, randomPuzzle->getPositions( 'D' ).size() );
-    ASSERT_EQ( 1, randomPuzzle->getPositions( 'P' ).size() );
-    ASSERT_EQ( 2, randomPuzzle->getPositions( 'R' ).size() );
-    ASSERT_EQ( 2, randomPuzzle->getPositions( 'Q' ).size() );
-    ASSERT_EQ( 2, randomPuzzle->getPositions( 'Z' ).size() );
   }
 }
