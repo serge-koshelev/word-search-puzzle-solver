@@ -17,35 +17,82 @@
 //    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <iostream>
+#include <memory>
+#include <utility>
+
+#include "../cxxopts/cxxopts.hpp"
+
 #include "PuzzleGenerator.h"
 #include "Puzzle.h"
+#include "PuzzleIterator.h"
+#include "PuzzleSolver.h"
 
-void Usage( const char * programName )
+int InteractiveShell()
 {
-  std::cout << "Words puzzle generator. Copyright( C ) 2019. Serge Koshelev" << std::endl;
-  std::cout << "  Usage:" << std::endl;
-  std::cout << "  " << programName << " [<rows> [<cols> [<seed>]]]" << std::endl;
+  // Read puzzle from console
+  std::cout << "Please enter puzzle, line by line. Empty line means end of puzzle input" << std::endl;
+  std::vector<std::string> inputPuzzle;
+  size_t colSize = 0;
+  while ( true )
+  {
+    std::string s = "";
+    std::getline( std::cin, s );
+    if ( s.empty() ) { break; }
+    colSize = s.length() > colSize ? s.length() : colSize;
+    inputPuzzle.push_back( s );
+  }
+  
+  // convert input to puzzle object
+  std::shared_ptr<Puzzle> userPuzzle( new Puzzle( static_cast<int>( inputPuzzle.size() )
+                                                , static_cast<int>( colSize ) 
+                                                ) );
+  for ( int i = 0; i < inputPuzzle.size(); ++i )
+  {
+    const std::string& s = inputPuzzle[i];
+    for ( int j = 0; j < s.length(); ++j )
+    {
+      userPuzzle->set( Position({i,j}), s[j] );
+    }
+  }
+
+  // Search in puzzle
+  std::cout << "You've entered this puzzle: " << *userPuzzle;
+  std::cout << "Type any word and press Enter to search this word in puzzle" << std::endl;
+  
+  PuzzleSolver puzzleSolver;
+
+  while ( true )
+  {
+    std::string word;
+    std::getline( std::cin, word );
+    if ( word.empty() ) { break; }
+
+    auto it = puzzleSolver.findWordInPuzzle( userPuzzle, word );
+    if ( it.isValid() ) { std::cout << "YES" << " " << it << std::endl; }
+    else                { std::cout << "NO"  << std::endl; }
+  }
+
+  return 0;
 }
 
 int main( int argc, char** argv )
 {
-  int rows = 10;
-  int cols = 10;
-  int seed = 0;
+  cxxopts::Options options( "WordPuzzleSolver", "Words puzzle generator. Copyright( C ) 2019. Serge Koshelev" );
+  options.add_options()
+    ("g,generate", "Generate puzzle [random|wiki]", cxxopts::value<std::string>())
+    ("r,rows", "For random puzzle defines the number of rows", cxxopts::value<std::string>())
+    ("c,cols", "For random puzzle defines the number of columns", cxxopts::value<std::string>())
+    ("p,puzzle", "Read puzzle from file", cxxopts::value<std::string>())
+    ("d,dictionary", "Read list of words to search in puzzle from file", cxxopts::value<std::string>())
+    ;
+  
+  auto result = options.parse( argc, argv );
+  auto& arguments = result.arguments();
 
-  try {
-    if (argc > 1) { rows = std::atoi( argv[1] ); }
-    if (argc > 2) { cols = std::atoi( argv[2] ); }
-    if (argc > 3) { seed = std::atoi( argv[3] ); }
-  }
-  catch (...)
-  {
-    std::cout << "Ivalid arguments" << std::endl;
-    Usage( argv[0] );
+  // if no arguments is given, run interactiv
+  if ( arguments.size() == 0 ) { return InteractiveShell(); }
 
-    return -1;
-  }
-
+/*
   std::cout << "Random generated word puzzle " << rows << "x" << cols << std::endl;
   PuzzleGenerator generator;
   auto puzzle = generator.generateRandomPuzzle( seed, rows, cols );
@@ -54,6 +101,7 @@ int main( int argc, char** argv )
   std::cout << "Word puzzle 10x10 from Wiki page about word search" << std::endl;
   auto wikiPuzzle = generator.generateWikiPuzzle();
   std::cout << *wikiPuzzle;
+  */
 
   return 0;
 }

@@ -33,8 +33,9 @@ public:
   /// @brief Default constructor
   PuzzleSolver();
 
-  /// @brief search one word in puzlle. On success where will contain starting point iterator
-  bool findWordInPuzzle( std::shared_ptr<Puzzle>, const std::string & word2Search, PuzzleIterator & where );
+  /// @brief search one word in puzlle.
+  /// @return On success valid iterator which contains the starting point, invalid iterator otherwise 
+  PuzzleIterator findWordInPuzzle( std::shared_ptr<Puzzle>, const std::string & word2Search );
 
 private:
 };

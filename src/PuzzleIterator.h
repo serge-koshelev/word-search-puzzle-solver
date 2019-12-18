@@ -59,6 +59,13 @@ inline Direction& operator++( Direction& dirId )
 class PuzzleIterator
 {
   public:
+    PuzzleIterator() :
+      _bindedPuzzle( std::shared_ptr<Puzzle>( nullptr ) ),
+      _position( Position({-1,-1}) ),
+      _direction( Undefined ),
+      _di( 0 ),
+      _dj( 0 ) {}
+
     /// @brief Constructor initialized iterator for given pozition and direction
     /// @param puzzle2Navigate puzzle binded with iterator
     /// @param startPoint iterator start position
@@ -77,6 +84,8 @@ class PuzzleIterator
       
       initIncrementValues();
     }
+
+    bool isValid() { return _bindedPuzzle.get() != nullptr; }
 
     /// @brief Copy constructor
     PuzzleIterator( const PuzzleIterator& rhs ) :

@@ -7,3 +7,5 @@ list(FILTER SOURCES_LIB EXCLUDE REGEX ".*main.cpp$")
 
 add_executable(${BINARY}_run ${SOURCES_RUN})
 add_library(${BINARY}_lib STATIC ${SOURCES_LIB})
+
+install(TARGETS ${BINARY}_run RUNTIME)

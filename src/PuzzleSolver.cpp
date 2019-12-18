@@ -36,12 +36,11 @@ bool findWord( PuzzleIterator it, const std::string & word2search, size_t pos )
   return false;
 }
 
-bool PuzzleSolver::findWordInPuzzle( std::shared_ptr<Puzzle> pzl
-                                   , const std::string&      word2Search 
-                                   , PuzzleIterator&         where
-                                   )
+PuzzleIterator PuzzleSolver::findWordInPuzzle( std::shared_ptr<Puzzle> pzl
+                                             , const std::string&      word2Search 
+                                             )
 {
-  if ( word2Search.empty() ) { return false; }
+  if ( word2Search.empty() ) { return PuzzleIterator(); }
 
   // collect all positions in puzzle matched the 1st letter from word
   auto positions = pzl->getPositions( toupper( word2Search[0] ) );
@@ -53,11 +52,10 @@ bool PuzzleSolver::findWordInPuzzle( std::shared_ptr<Puzzle> pzl
       // as first character is already matched, increment iterator
       if ( findWord( ++it, word2Search, 1 ) )
       {
-        where = PuzzleIterator( pzl, p, d );
-        return true;
+        return PuzzleIterator( pzl, p, d );
       }
     }
   }
 
-  return false;
+  return PuzzleIterator();
 }

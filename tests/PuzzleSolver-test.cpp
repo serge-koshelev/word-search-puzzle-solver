@@ -68,12 +68,13 @@ namespace
     //act
     auto wikiPuzzle = gen.generateWikiPuzzle();
     PuzzleSolver solver;
-    PuzzleIterator it( wikiPuzzle, Position( {0,0}), SouthEast );
     
     //assert
     for ( auto s : wordList )
     {
-      EXPECT_TRUE( solver.findWordInPuzzle( wikiPuzzle, s, it ) );
+      auto it = solver.findWordInPuzzle( wikiPuzzle, s );
+      EXPECT_TRUE( it.isValid() );
+
       //std::cout << s << ": -> " << it << std::endl;
     }
   }

@@ -40,6 +40,8 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
                  EXCLUDE_FROM_ALL)
 
 
+set( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
+
 # Add executable and tests
 add_subdirectory(src)
 add_subdirectory(tests)
