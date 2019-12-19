@@ -10,7 +10,7 @@ Build
 	# Clone github repository:
 	git clone https://github.com/serge-koshelev/word-search-puzzle-solver.git
 
-   # create build folder inside cloned code and change current directory
+   	# create build folder inside cloned code and change current directory
 	mkdir build
 	cd build
 
