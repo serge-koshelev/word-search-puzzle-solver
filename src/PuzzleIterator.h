@@ -66,7 +66,7 @@ class PuzzleIterator
       _di( 0 ),
       _dj( 0 ) {}
 
-    /// @brief Constructor initialized iterator for given pozition and direction
+    /// @brief Constructor initialize iterator for the given pozition and direction
     /// @param puzzle2Navigate puzzle binded with iterator
     /// @param startPoint iterator start position
     /// @param where2Go direction for iteration
