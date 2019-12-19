@@ -21,6 +21,7 @@
 #include "Puzzle.h"
 #include "PuzzleIterator.h"
 #include "PuzzleSolver.h"
+#include "WordList.h"
 
 PuzzleSolver::PuzzleSolver() {}
 
@@ -58,4 +59,22 @@ PuzzleIterator PuzzleSolver::findWordInPuzzle( std::shared_ptr<Puzzle> pzl
   }
 
   return PuzzleIterator();
+}
+
+// straitforward algorithm - search word by word from list
+std::vector<std::pair<std::string, PuzzleIterator>> PuzzleSolver::solvePuzzle( std::shared_ptr<Puzzle> puzzle
+                                                                             , const WordList&         words2search
+                                                                             )
+{
+  std::vector<std::pair<std::string, PuzzleIterator>> foundWords;
+
+  for ( int i = 0; i < words2search.size(); ++i )
+  {
+    auto it = findWordInPuzzle( puzzle, words2search[i] );
+    if ( it.isValid() )
+    {
+      foundWords.push_back( std::pair<std::string,PuzzleIterator>( { words2search[i], it } ) );
+    }
+  }
+  return foundWords;
 }

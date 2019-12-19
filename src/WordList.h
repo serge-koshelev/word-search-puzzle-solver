@@ -16,34 +16,38 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef PUZZLE_SOLVER_HH
-#define PUZZLE_SOLVER_HH
+#ifndef WORD_LIST_HH
+#define WORD_LIST_HH
 
-#include <memory>
 #include <string>
-#include <utility>
+#include <vector>
 
 class Puzzle;
-class PuzzleIterator;
-class WordList;
 
-/// @class PuzzleSolver
-/// @brief Solves puzzle or do some operations needed for solve
-class PuzzleSolver
+/// @class WordList
+/// @brief Container class to keep list of words to be searched in puzzle
+class WordList
 {
 public:
   /// @brief Default constructor
-  PuzzleSolver();
+  WordList() { ; }
 
-  /// @brief search one word in puzlle.
-  /// @return On success valid iterator which contains the starting point, invalid iterator otherwise 
-  PuzzleIterator findWordInPuzzle( std::shared_ptr<Puzzle>, const std::string & word2Search );
+  /// @brief Destructor
+  ~WordList() { ; }
 
-  /// @brief search list of words in puzzle
-  /// @return list of found words and their locations
-  std::vector<std::pair<std::string, PuzzleIterator>> PuzzleSolver::solvePuzzle( std::shared_ptr<Puzzle> puzzle, const WordList& words2search );
+  /// @brief Get number of words in the list
+  int size() const { return static_cast<int>( _wordList.size() ); }
+
+  /// @brief Get word for the given position
+  const std::string& operator[]( int pos ) const { return _wordList[pos]; }
+
+  /// @brief Read puzzle from file
+  /// @param fileName name of the file with words
+  /// @return number of words read from file
+  int loadFromFile( const std::string & fileName );
 
 private:
+  std::vector<std::string> _wordList; /// keep all possible letters to be used in puzzle
 };
 
 #endif

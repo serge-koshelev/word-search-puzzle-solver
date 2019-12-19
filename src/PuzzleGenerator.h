@@ -27,7 +27,7 @@
 class Puzzle;
 
 /// @class PuzzleGenerator
-/// @brief Fenerates M rows by N columns word puzzle
+/// @brief Generates M rows by N columns word puzzle
 /// using various algorithms
 /// Something like this:
 ///   JLIBPNZQOAJD
@@ -50,6 +50,9 @@ public:
   /// https://en.wikipedia.org/wiki/Word_search
   /// it is used for tests and benchmarks
   std::shared_ptr<Puzzle> generateWikiPuzzle();
+
+  /// @brief Read puzzle from file 
+  std::shared_ptr<Puzzle> loadPuzzleFromFile( const std::string & puzzleFileName );
 
 private:
   static std::string  LettersPool; /// keep all possible letters to be used in puzzle

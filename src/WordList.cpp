@@ -16,34 +16,23 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef PUZZLE_SOLVER_HH
-#define PUZZLE_SOLVER_HH
+#include "WordList.h"
 
-#include <memory>
-#include <string>
-#include <utility>
+#include <fstream>
+#include <iostream>
 
-class Puzzle;
-class PuzzleIterator;
-class WordList;
-
-/// @class PuzzleSolver
-/// @brief Solves puzzle or do some operations needed for solve
-class PuzzleSolver
+int WordList::loadFromFile( const std::string& fileName )
 {
-public:
-  /// @brief Default constructor
-  PuzzleSolver();
-
-  /// @brief search one word in puzlle.
-  /// @return On success valid iterator which contains the starting point, invalid iterator otherwise 
-  PuzzleIterator findWordInPuzzle( std::shared_ptr<Puzzle>, const std::string & word2Search );
-
-  /// @brief search list of words in puzzle
-  /// @return list of found words and their locations
-  std::vector<std::pair<std::string, PuzzleIterator>> PuzzleSolver::solvePuzzle( std::shared_ptr<Puzzle> puzzle, const WordList& words2search );
-
-private:
-};
-
-#endif
+  _wordList.clear();  
+  std::ifstream  infile( fileName );
+  std::string    line;
+  // read puzzle from file into temporary array of lines 
+  while ( std::getline( infile, line ) )
+  {
+    if ( !line.empty() )
+    {
+      _wordList.push_back( line );
+    }
+  }
+  return static_cast<int>( _wordList.size() );
+}

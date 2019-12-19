@@ -61,10 +61,21 @@ void Puzzle::set( const Position & p, char value )
   return;
 }
 
+bool Puzzle::isEqual( const Puzzle& rhs )
+{
+  if ( _rowsNumber != rhs._rowsNumber || _columnsNumber != rhs._columnsNumber ) { return false; }
+
+  for ( int i = 0; i < _rowsNumber; ++i )
+  {
+    for ( int j = 0; j < _columnsNumber; ++j )
+    {
+      if ( (*this)[i][j] != rhs[i][j] ) { return false; }
+    }
+  }
+}
+
 std::ostream& operator << ( std::ostream& os, const Puzzle& pz )
 {
-  os << std::endl;
-
   for ( int i = 0; i < pz.rows(); ++i )
   {
     for ( int j = 0; j < pz.columns(); ++j )
@@ -73,7 +84,6 @@ std::ostream& operator << ( std::ostream& os, const Puzzle& pz )
     }
     os << std::endl;
   }
-  os << std::endl;
 
   return os;
 }

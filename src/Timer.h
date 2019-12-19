@@ -16,34 +16,34 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef PUZZLE_SOLVER_HH
-#define PUZZLE_SOLVER_HH
+#ifndef TIMER_HH
+#define TIMER_HH
 
-#include <memory>
-#include <string>
-#include <utility>
+#include <chrono>
 
-class Puzzle;
-class PuzzleIterator;
-class WordList;
-
-/// @class PuzzleSolver
-/// @brief Solves puzzle or do some operations needed for solve
-class PuzzleSolver
+/// @brief Simple timer to mesure perfomance of algorithms
+template<typename type = double, typename period = std::milli>
+class Timer
 {
-public:
-  /// @brief Default constructor
-  PuzzleSolver();
+  public:
+    using clock       = std::chrono::high_resolution_clock;
+    using duration    = std::chrono::duration<type, period>;
+    using time_point  = std::chrono::time_point<clock, duration>;
 
-  /// @brief search one word in puzlle.
-  /// @return On success valid iterator which contains the starting point, invalid iterator otherwise 
-  PuzzleIterator findWordInPuzzle( std::shared_ptr<Puzzle>, const std::string & word2Search );
+    Timer() : _startTime( clock::now() ) { ; }
 
-  /// @brief search list of words in puzzle
-  /// @return list of found words and their locations
-  std::vector<std::pair<std::string, PuzzleIterator>> PuzzleSolver::solvePuzzle( std::shared_ptr<Puzzle> puzzle, const WordList& words2search );
+    Timer( const Timer& that ) = default;
+    Timer( Timer&& temp ) = default;
+    ~Timer() = default;
+    Timer& operator=( const Timer& that ) = default;
+    Timer& operator=( Timer&& temp ) = default;
 
-private:
+    duration elapsedTime() { return clock::now() - _startTime; }
+  
+    void restart() { _startTime = clock::now(); }
+
+  private:
+    time_point _startTime;
 };
 
 #endif

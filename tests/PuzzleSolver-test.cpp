@@ -21,6 +21,9 @@
 #include "PuzzleIterator.h"
 #include "PuzzleSolver.h"
 #include "PuzzleGenerator.h"
+#include "WordList.h"
+
+#include <fstream>
 
 namespace
 {
@@ -56,7 +59,7 @@ namespace
     }
   };
 
-  TEST( PuzzleSolverTest, searchOneWord ) {
+  TEST( PuzzleSolverTest, searchWords ) {
     //arrange
     PuzzleGenerator gen;
 
@@ -77,5 +80,33 @@ namespace
 
       //std::cout << s << ": -> " << it << std::endl;
     }
+  }
+
+  TEST( PuzzleSolverTest, searchWordsFromWordList )
+  {
+    //arrange
+    PuzzleGenerator gen;
+    std::vector<std::string> wordList = {
+      "Find", "Random", "Sleuth", "Backward", "Vertical",
+      "Diagonal", "Wikipedia", "Horizontal", "Word Search"
+    };
+
+    std::ofstream  outfile( "wordslist.txt" );
+    for ( auto w : wordList )
+    {
+      outfile << w << std::endl;
+    }
+    outfile.close();
+
+    WordList words2search;
+    int wrds = words2search.loadFromFile( "wordslist.txt" );
+
+    //act
+    auto wikiPuzzle = gen.generateWikiPuzzle();
+    PuzzleSolver solver;
+
+    PuzzleSolver puzzelSolver;
+    auto foundWords = puzzelSolver.solvePuzzle( wikiPuzzle, words2search );
+    ASSERT_EQ( wordList.size(), foundWords.size() );
   }
 }

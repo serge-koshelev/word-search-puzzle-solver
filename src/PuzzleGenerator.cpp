@@ -16,9 +16,12 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <iostream>
+#include <algorithm>
+#include <fstream>
 #include <random>
 #include <stdexcept>
+#include <string>
+#include <vector>
 
 #include "PuzzleGenerator.h"
 #include "Puzzle.h"
@@ -66,5 +69,39 @@ std::shared_ptr<Puzzle> PuzzleGenerator::generateWikiPuzzle()
       puzzle->set( Position( {i,j} ), pzl[i][j] );
     }
   }
+  return puzzle;
+}
+
+std::shared_ptr<Puzzle> PuzzleGenerator::loadPuzzleFromFile(const std::string& puzzleFileName)
+{
+  std::shared_ptr<Puzzle> puzzle;
+
+  std::string               line;
+  std::vector<std::string>  linesLst;
+  std::ifstream             infile( puzzleFileName );
+  int colSize = 0;
+
+  // read puzzle from file into temporary array of lines 
+  while ( std::getline( infile, line ) )
+  {
+    line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
+    if ( !line.empty() )
+    {
+      linesLst.push_back( line );
+      colSize = colSize < line.size() ? line.size() : colSize;
+    }
+  }
+
+  // generate puzzle
+  puzzle.reset( new Puzzle( static_cast<int>( linesLst.size() ), static_cast<int>( colSize ) ) );
+  for ( int i = 0; i < linesLst.size(); ++i )
+  {
+    const std::string& s = linesLst[i];
+    for ( int j = 0; j < s.length(); ++j )
+    {
+      puzzle->set( Position({i, j}), s[j] );
+    }
+  }
+
   return puzzle;
 }

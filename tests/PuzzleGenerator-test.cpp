@@ -16,7 +16,10 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <fstream>
+
 #include "gtest/gtest.h"
+
 #include "Puzzle.h"
 #include "PuzzleGenerator.h"
 
@@ -94,5 +97,22 @@ namespace
     ASSERT_EQ( 2, randomPuzzle->getPositions( 'R' ).size() );
     ASSERT_EQ( 2, randomPuzzle->getPositions( 'Q' ).size() );
     ASSERT_EQ( 2, randomPuzzle->getPositions( 'Z' ).size() );
+  }
+
+  TEST( PuzzleGeneratorTest, loadFromFile )
+  {
+    //arrange
+    PuzzleGenerator gen;
+
+    //act
+    auto randomPuzzle = gen.generateRandomPuzzle( 0, 10, 10 );
+    std::ofstream myfile( "testpuzzle.txt" );
+    myfile << *randomPuzzle;
+    myfile.close();
+
+    auto fromFilePuzzle = gen.loadPuzzleFromFile( "testpuzzle.txt" );
+
+    //assert
+    ASSERT_TRUE( *randomPuzzle == *fromFilePuzzle );
   }
 }

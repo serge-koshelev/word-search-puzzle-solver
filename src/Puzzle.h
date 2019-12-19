@@ -54,6 +54,12 @@ class Puzzle
     /// Allows also to change puzzle cell, but without caching it
     char* operator [] ( int i ) const { return _puzzle[i]; }
 
+    /// @brief Equal operator
+    bool operator == ( const Puzzle& rhs ) { return isEqual( rhs ); }
+
+    /// @brief Non equal operator
+    bool operator != ( const Puzzle& rhs ) { return !isEqual( rhs ); }
+
     /// @brief Get word puzzle cell element for the given pozition
     char get( const Position& p ) const { return _puzzle[p.first][p.second]; }
     /// @brief Set word puzzle cell element for the given pozition
@@ -67,6 +73,9 @@ class Puzzle
     int                                    _rowsNumber;
     int                                    _columnsNumber;
     std::map <char, std::vector<Position>> _hash;
+
+    // compare puzzle for equality element by element
+    bool isEqual( const Puzzle& rhs );
 
   private:
     // Memory allocated for puzzle distributed in the following way
