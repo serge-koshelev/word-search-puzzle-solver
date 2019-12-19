@@ -36,5 +36,9 @@ Build
 
     # To run interactivly just start application 
     cd bin
-	 ./WordPuzzle_run.exe  # on Linux
+	 ./WordPuzzle_run  # on Linux
 	 .\WordPuzzle_run.exe  # on Windows
+	 
+    # Examples for command line options:
+    # Generate random puzzle 20x20 with seed 1 and search words from file uk.dic
+    WordPuzzle_run.exe -g random -c 20 -r 20 -s 1 -l uk.dic
