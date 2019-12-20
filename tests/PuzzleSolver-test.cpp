@@ -73,12 +73,18 @@ namespace
     PuzzleSolver solver;
     
     //assert
+    //brute force algorith
     for ( auto s : wordList )
     {
-      auto it = solver.findWordInPuzzle( wikiPuzzle, s );
+      auto it = solver.findWordInPuzzleBruteForce( wikiPuzzle, s );
       EXPECT_TRUE( it.isValid() );
+    }
 
-      //std::cout << s << ": -> " << it << std::endl;
+    // double hash algorith
+    for ( auto s : wordList )
+    {
+      auto it = solver.findWordInPuzzleDoubleHash( wikiPuzzle, s );
+      EXPECT_TRUE( it.isValid() );
     }
   }
 
@@ -103,10 +109,14 @@ namespace
 
     //act
     auto wikiPuzzle = gen.generateWikiPuzzle();
-    PuzzleSolver solver;
+    PuzzleSolver bruteForceSolver( SearchAlgorithm::BruteForce );
 
     PuzzleSolver puzzelSolver;
     auto foundWords = puzzelSolver.solvePuzzle( wikiPuzzle, words2search );
+    ASSERT_EQ( wordList.size(), foundWords.size() );
+    
+    PuzzleSolver doubleHashSolver( SearchAlgorithm::DoubleHash );
+    foundWords = puzzelSolver.solvePuzzle( wikiPuzzle, words2search );
     ASSERT_EQ( wordList.size(), foundWords.size() );
   }
 }

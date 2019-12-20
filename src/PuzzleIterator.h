@@ -85,6 +85,31 @@ class PuzzleIterator
       initIncrementValues();
     }
 
+    /// @brief Constructor initializes iterator from 2 positions
+    /// if distance between positions more than 1, creates invalid iterator
+    /// @param puzzle2Navigate puzzle binded with iterator
+    /// @param startPoint iterator start position
+    /// @param nextPoint position which points direction
+    PuzzleIterator( std::shared_ptr<Puzzle> puzzel2Navigate, Position startPoint, Position nextPoint ) :
+      _bindedPuzzle( puzzel2Navigate ),
+      _position( startPoint ),
+      _direction( Undefined ),
+      _di( nextPoint.first - startPoint.first ),
+      _dj( nextPoint.second - startPoint.second )
+    {
+      int distance = _di * _di + _dj * _dj;
+      if ( distance > 2 ) // points are further than one increment step from each others. Invalid iterator
+      {
+        _bindedPuzzle.reset();
+        _position = Position( { -1,-1 } );
+        _di = 0;
+        _dj = 0;
+        return;
+      }
+      // deduce direction
+      initDirectionFromIncrementValues();
+    }
+
     bool isValid() { return _bindedPuzzle.get() != nullptr; }
 
     /// @brief Copy constructor
@@ -175,6 +200,36 @@ class PuzzleIterator
         case NorthWest : _di = -1; _dj = -1; break;
         case Undefined :
         default        : _di =  0; _dj =  0; break;
+      }
+    }
+
+    void initDirectionFromIncrementValues()
+    {
+      switch ( _di )
+      {
+      case -1:
+        switch ( _dj )
+        {
+          case -1: _direction = NorthWest; break;
+          case  0: _direction = North;     break;
+          case  1: _direction = NorthEast; break;
+        }
+        break;
+      case 0:
+        switch ( _dj )
+        {
+          case -1: _direction = West; break;
+          case  1: _direction = East; break;
+        }
+        break;
+      case 1:
+        switch ( _dj )
+        {
+          case -1: _direction = SouthWest; break;
+          case  0: _direction = South;     break;
+          case  1: _direction = SouthEast; break;
+        }
+        break;
       }
     }
 };

@@ -111,7 +111,7 @@ namespace
     ASSERT_EQ( 'A', *it1 );
 
     // act
-    ++it1; ++it2; ++it3; ++it4; ++it5; ++it6; ++it7; ++it8;
+    it1++; it2++; it3++; it4++; it5++; it6++; it7++; it8++;
 
     //assert
     ASSERT_EQ( Position( {0,1} ), (Position)it1 );
@@ -133,7 +133,7 @@ namespace
     ASSERT_EQ( 'I', *it8 );
 
     //act
-    ++it1; ++it2; ++it3; ++it4; ++it5; ++it6; ++it7; ++it8;
+    it1++; it2++; it3++; it4++; it5++; it6++; it7++; it8++;
 
     //assert
     ASSERT_EQ( Position( {-1, 1} ), (Position)it1 );
@@ -153,5 +153,36 @@ namespace
     ASSERT_EQ( Puzzle::NotInitializedValue, *it6 );
     ASSERT_EQ( Puzzle::NotInitializedValue, *it7 );
     ASSERT_EQ( Puzzle::NotInitializedValue, *it8 );
+  }
+
+  TEST( PuzzleItertorTest, distance )
+  {
+    //arrange
+    PuzzleGenerator gen;
+    auto            puzzle = gen.generateRandomPuzzle( 0, 5, 5 );
+
+    for ( auto d = First; d != Last; ++d )
+    {
+      //act
+      PuzzleIterator itCenter( puzzle, Position( { 2,2 } ), d );
+      itCenter++;
+      PuzzleIterator it( puzzle, Position( { 2,2 }), itCenter.position() );
+
+      //assert
+      ASSERT_TRUE( it.isValid() );
+      ASSERT_EQ( it.direction(), d );
+    }
+
+    for ( auto d = First; d != Last; ++d )
+    {
+      //act
+      PuzzleIterator itCenter( puzzle, Position( { 2,2 } ), d );
+      itCenter++;
+      itCenter++;
+      PuzzleIterator it( puzzle, Position( { 2,2 } ), itCenter.position() );
+
+      //assert
+      ASSERT_FALSE( it.isValid() );
+    }
   }
 }

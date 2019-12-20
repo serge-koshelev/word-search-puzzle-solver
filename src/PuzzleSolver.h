@@ -27,23 +27,35 @@ class Puzzle;
 class PuzzleIterator;
 class WordList;
 
+enum class SearchAlgorithm
+{
+  BruteForce,
+  DoubleHash
+};
+
 /// @class PuzzleSolver
 /// @brief Solves puzzle or do some operations needed for solve
 class PuzzleSolver
 {
 public:
   /// @brief Default constructor
-  PuzzleSolver();
+  PuzzleSolver( SearchAlgorithm algo = SearchAlgorithm::BruteForce );
 
-  /// @brief search one word in puzlle.
+  /// @brief search one word in puzlle using brute force algorithm.
   /// @return On success valid iterator which contains the starting point, invalid iterator otherwise 
-  PuzzleIterator findWordInPuzzle( std::shared_ptr<Puzzle>, const std::string & word2Search );
+  PuzzleIterator findWordInPuzzleBruteForce( std::shared_ptr<Puzzle>, const std::string & word2Search );
+
+  
+  /// @brief search one word in puzlle using 2 first letters from word to find direction
+  /// @return On success valid iterator which contains the starting point, invalid iterator otherwise 
+  PuzzleIterator findWordInPuzzleDoubleHash( std::shared_ptr<Puzzle>, const std::string& word2Search );
 
   /// @brief search list of words in puzzle
   /// @return list of found words and their locations
   std::vector<std::pair<std::string, PuzzleIterator>> PuzzleSolver::solvePuzzle( std::shared_ptr<Puzzle> puzzle, const WordList& words2search );
 
 private:
+  SearchAlgorithm _searchAlgo;
 };
 
 #endif

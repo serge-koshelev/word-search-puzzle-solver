@@ -23,10 +23,13 @@
 #include "PuzzleSolver.h"
 #include "WordList.h"
 
-PuzzleSolver::PuzzleSolver() {}
+PuzzleSolver::PuzzleSolver( SearchAlgorithm algo )
+{
+  _searchAlgo = algo;
+}
 
 /// @brief recursive function to search the given word
-bool findWord( PuzzleIterator it, const std::string & word2search, size_t pos )
+bool findWord( PuzzleIterator & it, const std::string & word2search, size_t pos )
 {
   if ( word2search.length() == pos ) { return true; }
   if ( word2search[pos] == ' ' ) { return findWord( it, word2search, ++pos ); }
@@ -37,9 +40,9 @@ bool findWord( PuzzleIterator it, const std::string & word2search, size_t pos )
   return false;
 }
 
-PuzzleIterator PuzzleSolver::findWordInPuzzle( std::shared_ptr<Puzzle> pzl
-                                             , const std::string&      word2Search 
-                                             )
+PuzzleIterator PuzzleSolver::findWordInPuzzleBruteForce( std::shared_ptr<Puzzle> pzl
+                                                       , const std::string&      word2Search 
+                                                       )
 {
   if ( word2Search.empty() ) { return PuzzleIterator(); }
 
@@ -61,6 +64,40 @@ PuzzleIterator PuzzleSolver::findWordInPuzzle( std::shared_ptr<Puzzle> pzl
   return PuzzleIterator();
 }
 
+PuzzleIterator PuzzleSolver::findWordInPuzzleDoubleHash( std::shared_ptr<Puzzle> pzl
+                                                       , const std::string& word2Search
+                                                       )
+{
+  if ( word2Search.empty() ) { return PuzzleIterator(); }
+
+  // collect all positions in puzzle matched the 1st letter from word
+  auto positions1st = pzl->getPositions( toupper( word2Search[0] ) );
+  if ( word2Search.length() < 2 )
+  {
+    return positions1st.empty() ? PuzzleIterator() : PuzzleIterator( pzl, positions1st[0], Undefined );
+  }
+
+  auto positions2nd = pzl->getPositions( toupper( word2Search[1] ) );
+  if ( positions2nd.empty() ) { return PuzzleIterator(); }
+
+  for ( auto p1 : positions1st )
+  {
+    for ( auto p2 : positions2nd )
+    {
+      PuzzleIterator it( pzl, p1, p2 );
+      if ( it.isValid() )
+      {
+        if ( findWord( ++it, word2Search, 1 ) )
+        {
+          return PuzzleIterator( pzl, p1, it.direction() );
+        }
+      }
+    }
+  }
+
+  return PuzzleIterator();
+}
+
 // straitforward algorithm - search word by word from list
 std::vector<std::pair<std::string, PuzzleIterator>> PuzzleSolver::solvePuzzle( std::shared_ptr<Puzzle> puzzle
                                                                              , const WordList&         words2search
@@ -70,7 +107,8 @@ std::vector<std::pair<std::string, PuzzleIterator>> PuzzleSolver::solvePuzzle( s
 
   for ( int i = 0; i < words2search.size(); ++i )
   {
-    auto it = findWordInPuzzle( puzzle, words2search[i] );
+    auto it = _searchAlgo == SearchAlgorithm::BruteForce ? findWordInPuzzleBruteForce( puzzle, words2search[i] )
+                                                         : findWordInPuzzleDoubleHash( puzzle, words2search[i] );
     if ( it.isValid() )
     {
       foundWords.push_back( std::pair<std::string,PuzzleIterator>( { words2search[i], it } ) );

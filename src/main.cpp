@@ -31,7 +31,7 @@
 #include "PuzzleSolver.h"
 #include "WordList.h"
 
-int InteractiveShell( std::shared_ptr<Puzzle> & userPuzzle )
+int InteractiveShell( std::shared_ptr<Puzzle> & userPuzzle, SearchAlgorithm algo )
 {
   if ( !userPuzzle )
   {
@@ -73,7 +73,9 @@ int InteractiveShell( std::shared_ptr<Puzzle> & userPuzzle )
     std::getline( std::cin, word );
     if ( word.empty() ) { break; }
 
-    auto it = puzzleSolver.findWordInPuzzle( userPuzzle, word );
+    auto it = algo == SearchAlgorithm::BruteForce ? puzzleSolver.findWordInPuzzleBruteForce( userPuzzle, word )
+                                                  : puzzleSolver.findWordInPuzzleDoubleHash( userPuzzle, word );
+
     if ( it.isValid() ) { std::cout << "YES" << " " << it << std::endl; }
     else                { std::cout << "NO"  << std::endl; }
   }
@@ -93,13 +95,22 @@ int main( int argc, char** argv )
       ("s,seed",       "For random puzzle defines seed value",             cxxopts::value<std::string>())
       ("p,puzzle",     "Read puzzle from file",                            cxxopts::value<std::string>())
       ("l,words-list", "Read list of words to search in puzzle from file", cxxopts::value<std::string>())
+      ("a,algo",       "Word search algorithm bruteforce|doublehash",      cxxopts::value<std::string>())
       ;
   
     auto result = options.parse( argc, argv );
     auto& arguments = result.arguments();
 
+    SearchAlgorithm algo = SearchAlgorithm::BruteForce;
+    if ( result.count( "algo" ) > 0 )
+    {
+      auto algoName = result["algo"].as<std::string>();
+      if (      algoName == "bruteforce" ) { algo = SearchAlgorithm::BruteForce; }
+      else if ( algoName == "doublehash" ) { algo = SearchAlgorithm::DoubleHash; }
+    }
+
     // if no arguments is given, run interactiv
-    if ( arguments.size() == 0 ) { return InteractiveShell( std::shared_ptr<Puzzle>() ); }
+    if ( arguments.size() == 0 ) { return InteractiveShell( std::shared_ptr<Puzzle>(), algo ); }
 
     PuzzleGenerator gen;
 
@@ -144,7 +155,7 @@ int main( int argc, char** argv )
       words2search->loadFromFile( result["l"].as<std::string>() );
     }
 
-    if ( !words2search ) { return InteractiveShell( puzzle ); }
+    if ( !words2search ) { return InteractiveShell( puzzle, algo ); }
     
     PuzzleSolver solver;
     Timer<> stopWatch;
