@@ -50,7 +50,7 @@ PuzzleIterator PuzzleSolver::findWordInPuzzleBruteForce( std::shared_ptr<Puzzle>
   auto positions = pzl->getPositions( toupper( word2Search[0] ) );
   for ( auto p : positions )
   {
-    for ( Direction d = First; d != Last; ++d )
+    for ( Direction d = First; d <= Last; ++d )
     {
       PuzzleIterator it( pzl, p, d );
       // as first character is already matched, increment iterator

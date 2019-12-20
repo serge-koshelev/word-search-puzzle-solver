@@ -177,12 +177,15 @@ namespace
     {
       //act
       PuzzleIterator itCenter( puzzle, Position( { 2,2 } ), d );
-      itCenter++;
-      itCenter++;
+      ++itCenter;
+      ++itCenter;
       PuzzleIterator it( puzzle, Position( { 2,2 } ), itCenter.position() );
 
       //assert
       ASSERT_FALSE( it.isValid() );
     }
+
+    PuzzleIterator itSamePos( puzzle, Position( { 2,2 } ), Position( { 2,2 } ) );
+    ASSERT_FALSE( itSamePos.isValid() );
   }
 }

@@ -98,7 +98,8 @@ class PuzzleIterator
       _dj( nextPoint.second - startPoint.second )
     {
       int distance = _di * _di + _dj * _dj;
-      if ( distance > 2 ) // points are further than one increment step from each others. Invalid iterator
+      // if points are further or closer than one increment step from each others, return invalid iterator
+      if ( distance < 1 || distance > 2 ) 
       {
         _bindedPuzzle.reset();
         _position = Position( { -1,-1 } );
