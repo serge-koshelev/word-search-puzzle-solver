@@ -1,6 +1,6 @@
 Simple word search puzzle solver
 
-Full description could be found on Wikipedia:
+The full description of word search puzzle, could be found on Wikipedia:
 https://en.wikipedia.org/wiki/Word_search
 
 To build code you need CMake > 3.10 and C++ compiler
@@ -25,7 +25,7 @@ Build
 
 
 	# Windows 
-     # generate project and solution files for VS 2019
+          # generate project and solution files for VS 2019
 	  # it will automaticly download googletest framework from internet
 	  cmake -G "Visual Studio 2019" ..
 	  # build
@@ -33,6 +33,12 @@ Build
 	  # install to build/bin folder
 	  # build target INSTALL in solution
 
+          # Note:
+	    Visual Studio 2019 also support cmake directily. You could open
+	    clonned folder in Visual Studio and in Solution explorer switch view
+	    to "CMake Targets View". In this case, Visual Studio itsel will run cmake
+	    and configure the project. You could right click on WordPuzzle_run target and select "Build"
+	    and then "Incstall"
 
     # To run interactivly just start application 
     cd bin
